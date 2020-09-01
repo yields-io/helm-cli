@@ -3,6 +3,8 @@ FROM alpine:3
 ARG HELM_VERSION
 ENV HELM_VERSION=${HELM_VERSION:-"3.3.0"}
 
+ENV HELM_PLUGINS=/root/.local/share/helm/plugins
+
 RUN apk add --no-cache \
         curl=7.69.1-r0 \
         git=2.26.2-r0
