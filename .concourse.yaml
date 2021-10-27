@@ -39,7 +39,7 @@ resources:
   source:
     username: ((docker.username))
     password:  ((docker.password))
-    repository: build.yields.io/helm-cli
+    repository: build.yields.io/helm
 
 resource_types:
 - name: concourse-git-semver-tag
