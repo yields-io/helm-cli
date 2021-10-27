@@ -7,22 +7,22 @@ jobs:
     - get: version
       trigger: true
 
-    - task: lint
-      config:
-        inputs:
-        - name: source
-          path: .
-        platform: linux
-        image_resource:
-          type: docker-image
-          source:
-            repository: hadolint/hadolint
-        run:
-          path: hadolint
-          args:
-          - Dockerfile
-          - -t
-          - warning
+  - task: lint
+    config:
+      inputs:
+      - name: source
+        path: .
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: hadolint/hadolint
+      run:
+        path: hadolint
+        args:
+        - Dockerfile
+        - -t
+        - warning
 
   - put: out-docker-image
     params:
