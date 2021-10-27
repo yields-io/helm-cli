@@ -21,16 +21,16 @@ resources:
   source:
     branch: master
     password: x-oauth-basic
-    uri: git@github.com:yields-io/helm-cli.git
+    uri: https://github.com/yields-io/helm-cli.git
     username: ((git-token.username))
   type: concourse-git-semver-tag
 
 - icon: github
   name: source
   source:
-    branch: concourse
+    branch: master
     password: x-oauth-basic
-    uri: git@github.com:yields-io/helm-cli.git
+    uri: https://github.com/yields-io/helm-cli.git
     username: ((git-token.username))
   type: git
 
