@@ -1,22 +1,19 @@
 jobs:
-- name: build
+- name: build-tag
   plan:
   - in_parallel:
+    - get: hadolint
     - get: source
-      trigger: true
     - get: version
       trigger: true
 
   - task: lint
+    image: hadolint
     config:
       inputs:
       - name: source
         path: .
       platform: linux
-      image_resource:
-        type: docker-image
-        source:
-          repository: hadolint/hadolint
       run:
         path: hadolint
         args:
@@ -32,6 +29,55 @@ jobs:
       dockerfile: source/Dockerfile
       tag_file: version/number
       tag_as_latest: true
+    get_params: {skip_download: true}
+
+- name: build-master
+  plan:
+  - in_parallel:
+    - get: hadolint
+    - get: debian
+    - get: source
+      trigger: true
+
+  - task: lint
+    image: hadolint
+    config:
+      inputs:
+      - name: source
+        path: .
+      platform: linux
+      run:
+        path: hadolint
+        args:
+        - Dockerfile
+        - -t
+        - warning
+
+  - task: docker-tag
+    image: debian
+    config:
+      inputs:
+      - name: source
+        path: .
+      outputs:
+      - name: docker-tag
+      platform: linux
+      params:
+        BRANCH: master
+      run:
+        path: bash
+        args:
+        - -c
+        - |
+          cat .git/refs/heads/${BRANCH} | cut -b1-8 > docker-tag/tag
+
+  - put: out-docker-image
+    params:
+      build: source
+      dockerfile: source/Dockerfile
+      tag_file: docker-tag/tag
+      cache: true
+      cache_tag: latest
     get_params: {skip_download: true}
 
 resources:
@@ -58,6 +104,17 @@ resources:
     username: ((docker.username))
     password:  ((docker.password))
     repository: build.yields.io/helm
+
+- name: hadolint
+  source:
+    repository: hadolint/hadolint
+  type: registry-image
+
+- name: debian
+  source:
+    repository: debian
+    tag: 11-slim
+  type: registry-image
 
 resource_types:
 - name: concourse-git-semver-tag
