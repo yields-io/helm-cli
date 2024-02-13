@@ -2,7 +2,7 @@ FROM debian:11-slim
 
 ARG HELM_VERSION
 
-ENV HELM_VERSION=${HELM_VERSION:-"3.7.1"}
+ENV HELM_VERSION=${HELM_VERSION:-"3.14.0"}
 
 ENV HELM_PLUGINS=/root/.local/share/helm/plugins
 
